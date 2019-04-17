@@ -1,0 +1,85 @@
+<!-- /sections/cart-related-products.liquid -->
+{% assign collection = collections[section.settings.collection] %}
+{% case section.settings.grid %}
+{% when 2 %}{% assign grid_item_width = 'medium--one-half large--one-half' %}
+{% when 3 %}{% assign grid_item_width = 'small--one-half medium--one-third large--one-third' %}
+{% when 4 %}{% assign grid_item_width = 'small--one-half medium--one-quarter large--one-quarter' %}
+{% when 5 %}{% assign grid_item_width = 'small--one-half medium-one-fifth large--one-fifth' %}
+{% endcase %}
+
+{% assign product_limit = section.settings.grid | times: section.settings.rows %}
+<div data-section-id="{{ section.id }}" data-section-type="featured-collection" >
+<div class="grid--full medium-down--hide section-background card-shadow home-reveal">
+  <div class="grid__item one-whole full-width {% if section.settings.title == blank %}homepage-featured-collection-title{% endif %} {% if section.settings.show_view_all != 'true' %} homepage-collection-margin {% endif %}">
+    <h1 class="section-title">{{ section.settings.title | escape }}</h1>
+    {% assign collection = collections['all'] %}
+   {% for item in cart.items %}
+      {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}
+      {% assign product_url = producturls | split: ', ' %}
+    {% endfor %}
+    <div class="index-pgi">
+      {% for item in cart.items %}
+      {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}
+      {% assign product_urls = producturls | split: ', ' %}{% for product_url in product_urls %}{% assign product = all_products[product_url] %}{% include 'product-cart-grid-item' %}{% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Featured Collection -->
+<div class="grid--full card-shadow large--hide section-background mobile-featured-collection home-reveal">
+  <div class="grid__item one-whole full-width homepage-featured-collection-title {% if section.settings.show_view_all != 'true' %} homepage-collection-margin {% endif %}">
+    {% assign collection = collections['all'] %}
+    {% assign mobile_product_limit = section.settings.mobile-product-limit %}
+    <h1 class="section-title">{{ section.settings.title | escape }}</h1>
+    <div class="index-pgi js-slides-container">
+      {% for item in cart.items %}
+      {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}
+      {% assign product_urls = producturls | split: ', ' %}{% for product_url in product_urls %}{% assign product = all_products[product_url] %}<div>{% include 'product-cart-grid-item' %}</div>{% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart Related Products",
+  "class": "section-margin section-featured-collection",
+  "settings": [
+   {
+    "type": "text",
+    "id": "title",
+    "label": "Title",
+    "default": "You May Also Like"
+   },
+   {
+    "type": "range",
+    "id": "mobile-product-limit",
+    "min": 2,
+    "max": 5,
+    "step": 1,
+    "label": "Mobile product limit",
+    "default": 4
+   },
+   {
+    "type": "range",
+    "id": "grid",
+    "min": 2,
+    "max": 5,
+    "step": 1,
+    "label": "Products per row",
+    "default": 4
+   },
+   {
+    "type": "range",
+    "id": "rows",
+    "min": 1,
+    "max": 5,
+    "step": 1,
+    "label": "Rows",
+    "default": 1
+   }
+  ]
+}
+{% endschema %}
