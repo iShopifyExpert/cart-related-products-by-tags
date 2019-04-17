@@ -11,12 +11,8 @@
 <div data-section-id="{{ section.id }}" data-section-type="featured-collection" >
 <div class="grid--full medium-down--hide section-background card-shadow home-reveal">
   <div class="grid__item one-whole full-width {% if section.settings.title == blank %}homepage-featured-collection-title{% endif %} {% if section.settings.show_view_all != 'true' %} homepage-collection-margin {% endif %}">
-    <h1 class="section-title">{{ section.settings.title | escape }}</h1>
-    {% assign collection = collections['all'] %}
-   {% for item in cart.items %}
-      {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}
-      {% assign product_url = producturls | split: ', ' %}
-    {% endfor %}
+    {% assign collection = collections['all'] %}{% for item in cart.items %}{%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}{% assign product_url = producturls | split: ', ' %}{% if product_url != blank %}{%if forloop.first%}
+    <h1 class="section-title">{{ section.settings.title | escape }}</h1>{% endif %}{% endif %}{% endfor %}
     <div class="index-pgi">
       {% for item in cart.items %}
       {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}
