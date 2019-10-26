@@ -1,0 +1,48 @@
+{% assign heading = section.settings.title %}
+{% assign limit = 4 %}
+<div class="page-width product-recommendations" data-product-id="{{ product.id }}" data-limit="{{ limit }}" data-section-id="{{ section.id }}" data-section-type="product-recommendations">
+  <div class="section-header text-center">
+    <h2>{{ heading }}</h2>
+  </div>
+  <ul class="grid grid--uniform grid--view-items">
+    {% for item in cart.items %}
+    {%capture producturls%}{% for tag in item.product.tags %}{%if tag contains 'products/'%}{% assign producturl = tag | remove: 'products/' %}{{producturl}}, {% endif %}{% endfor %}{%endcapture%}{% assign product_urls = producturls | split: ', ' | uniq %}{% for product_url in product_urls %}{% assign product = all_products[product_url] %}
+    <li class="grid__item small--one-half medium-up--one-quarter" data-count"{%increment counter%}" {% if counter > 4 %}style="display: none;"{%endif%}>
+      {% include 'product-card-grid-cart', max_height: 250 %}
+    </li>
+    {% endfor %}{% endfor %}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Cart Related Products",
+  "class": "section-margin section-featured-collection",
+  "settings": [
+   {
+    "type": "text",
+    "id": "title",
+    "label": "Title",
+    "default": "You May Also Like"
+   },
+   {
+    "type": "range",
+    "id": "mobile-product-limit",
+    "min": 2,
+    "max": 5,
+    "step": 1,
+    "label": "Mobile product limit",
+    "default": 4
+   },
+   {
+    "type": "range",
+    "id": "grid",
+    "min": 2,
+    "max": 5,
+    "step": 1,
+    "label": "Products per row",
+    "default": 4
+   }
+  ]
+}
+{% endschema %}
